@@ -11,7 +11,10 @@
         }
 
         .container {
-            background-color: black;
+            background-image: url("assets/background.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
             min-height: 100%;
             position: relative;
         }
@@ -27,7 +30,7 @@
             height: 350px;
             border-style: solid;
             border-width: 4px;
-            border-color: grey;
+            border-color: #F1EFE2;
             border-radius: 3px;
             background-color: black;
         }
@@ -40,7 +43,7 @@
             color: white;
             border-width: 1px;
             border-style: solid;
-            border-color: grey;
+            border-color: #F1EFE2;
             position: relative;
         }
 
@@ -54,10 +57,10 @@
             top: 5px;
         }
 
-        .window-title-buttons :first-child {
-            position: relative;
-            left: 3px;
-        }
+            .window-title-buttons :first-child {
+                position: relative;
+                left: 3px;
+            }
 
         .console {
             color: grey;
@@ -76,13 +79,13 @@
                     M:\
                 </span>
                 <span class="window-title-buttons">
-                    <img src="assets/minimize.png"/>
+                    <img src="assets/minimize.png" />
                     <img src="assets/maximize.png" />
                     <img src="assets/close.png" />
                 </span>
             </div>
             <div class="console">
-                M:\> 
+                M:\>
             </div>
         </div>
     </div>
