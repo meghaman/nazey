@@ -41,10 +41,17 @@
             border-width: 1px;
             border-style: solid;
             border-color: grey;
+            position: relative;
         }
 
         .window-title-content {
             margin-left: 10px;
+        }
+
+        .window-title-buttons {
+            position: absolute;
+            right: 0;
+            top: 5px;
         }
 
         .console {
@@ -60,12 +67,17 @@
     <div class="container">
         <div class="window">
             <div class="window-title">
-                <div class="window-title-content">
+                <span class="window-title-content">
                     M:\
-                </div>
+                </span>
+                <span class="window-title-buttons">
+                    <img src="assets/minimize.png"/>
+                    <img src="assets/maximize.png" />
+                    <img src="assets/close.png" />
+                </span>
             </div>
             <div class="console">
-                Content
+                M:\> 
             </div>
         </div>
     </div>
