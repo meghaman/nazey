@@ -78,6 +78,75 @@
                 top: 5px;
             }
 
+        .taskbar-time {
+            display: inline-block;
+            background: #108FE9;
+            height: 35px;
+            width: 75px;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            text-align: right;
+        }
+
+            .taskbar-time::before,  .taskbar-time::after{
+                content: '';
+                display: inline-block;
+                height: 10px;
+                width: 100%;
+                position: relative;
+            }
+
+            .taskbar-time::before {
+                background: linear-gradient(to top, #108FE9, #095BC9);
+                bottom: 5px;
+            }
+
+            .taskbar-time::after {
+                background: linear-gradient(to bottom, #108FE9, #095BC9);
+                top: 5px;
+            }
+
+            .taskbar-time span {
+                color: white;
+                position: relative;
+                bottom: 7px;
+                right: 7px;
+            }
+
+        .taskbar-start {
+            display: inline-block;
+            background: #1B901B;
+            height: 35px;
+            width: 100px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            text-align:center;
+        }
+
+            .taskbar-start::before, .taskbar-start::after{
+                content: '';
+                display: inline-block;
+                height: 10px;
+                width: 100%;
+                position: relative;
+            }
+
+            .taskbar-start::before {
+                background: linear-gradient(to top, #1B901B, #093F09);
+                bottom: 5px;
+            }
+
+            .taskbar-start::after {
+                background: linear-gradient(to bottom, #1B901B, #093F09);
+                top: 5px;
+            }
+
+            .taskbar-start img {
+                position: relative;
+                bottom: 33%;
+            }
 
         .window {
             position: absolute;
@@ -156,35 +225,34 @@
             <span class="desktop-list">
                 <span class="desktop-list-icon">
                     <a href="resume/MuraliKulachandran.pdf" target="_blank">
-                        <img src="assets/Pdflogogt.png" height="65px" width="65px" />
+                        <img src="assets/Pdflogogt.png" height="65" width="65" />
                         <br />
                         Resume
                     </a>
                 </span>
                 <span class="desktop-list-icon">
                     <a href="https://www.linkedin.com/in/murali-kulachandran-998b8216/" target="_blank">
-                        <img src="assets/linkedin.png" height="65px" width="65px" />
+                        <img src="assets/linkedin.png" height="65" width="65" />
                         <br />
                         LinkedIn
                     </a>
                 </span>
                 <span class="desktop-list-icon">
                     <a href="https://www.youtube.com/watch?v=HMogavLqgAM" target="_blank">
-                        <img src="assets/youtube.png" height="65px" width="65px" />
+                        <img src="assets/youtube.png" height="65" width="65" />
                         <br />
                         Stand-up Set
                     </a>
                 </span>
             </span>
             <div class="taskbar">
-                <span class="taskbar-start">
-
-                </span>
                 <span class="taskbar-programs_bar">
-
+                </span>
+                <span class="taskbar-start">
+                    <img src="assets/mk_logo.png" height="25" width="25" />
                 </span>
                 <span class="taskbar-time">
-
+                    <span>1:40 PM</span>
                 </span>
             </div>
         </div>
