@@ -40,11 +40,43 @@
             margin: 5px;
         }
 
-        .desktop-list-icon a{
-            color: white;
-            text-decoration: none;
-            font-family: Tahoma,Verdana,Segoe,sans-serif;
+            .desktop-list-icon a {
+                color: white;
+                text-decoration: none;
+                font-family: Tahoma,Verdana,Segoe,sans-serif;
+            }
+
+        .taskbar {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            height: 35px;
         }
+
+        .taskbar-programs_bar {
+            display: inline-block;
+            background: #3168D5;
+            height: 35px;
+            width: 100%;
+        }
+
+            .taskbar-programs_bar::before,  .taskbar-programs_bar::after{
+                content: '';
+                display: inline-block;
+                height: 10px;
+                width: 100%;
+                position: relative;
+            }
+
+            .taskbar-programs_bar::before {
+                background: linear-gradient(to top, #3168D5, #1941A5);
+                bottom: 5px;
+            }
+
+            .taskbar-programs_bar::after {
+                background: linear-gradient(to bottom, #3168D5, #1941A5);
+                top: 5px;
+            }
 
 
         .window {
@@ -144,6 +176,17 @@
                     </a>
                 </span>
             </span>
+            <div class="taskbar">
+                <span class="taskbar-start">
+
+                </span>
+                <span class="taskbar-programs_bar">
+
+                </span>
+                <span class="taskbar-time">
+
+                </span>
+            </div>
         </div>
         <div class="window">
             <div class="window-title">
