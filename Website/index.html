@@ -19,6 +19,34 @@
             position: relative;
         }
 
+        .desktop {
+            height: 100%;
+            width: 100%;
+        }
+
+        .desktop-list {
+            display: inline-block;
+            height: 100%;
+            margin-top: 20px;
+            max-width: 100px;
+        }
+
+
+        .desktop-list-icon {
+            display: inline-block;
+            height: 100px;
+            width: 100px;
+            text-align: center;
+            margin: 5px;
+        }
+
+        .desktop-list-icon a{
+            color: white;
+            text-decoration: none;
+            font-family: Tahoma,Verdana,Segoe,sans-serif;
+        }
+
+
         .window {
             position: absolute;
             top: 0;
@@ -65,14 +93,58 @@
         .console {
             color: grey;
             font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+            font-size: 15px;
             margin: 3px;
             background-color: black;
             max-height: 317px;
+        }
+
+        .console-history {
+            width: 100%;
+            overflow: auto;
+            overflow-x: hidden;
+            max-height: 100px;
+        }
+
+        .console-input-text {
+            width: 100%;
+            display: block;
+            background-color: rgba(0, 0, 0, 0);
+            color: grey;
+            border: none;
+            outline: none;
+            font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+            font-size: 15px;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="desktop">
+            <span class="desktop-list">
+                <span class="desktop-list-icon">
+                    <a href="resume/MuraliKulachandran.pdf" target="_blank">
+                        <img src="assets/Pdflogogt.png" height="65px" width="65px" />
+                        <br />
+                        Resume
+                    </a>
+                </span>
+                <span class="desktop-list-icon">
+                    <a href="https://www.linkedin.com/in/murali-kulachandran-998b8216/" target="_blank">
+                        <img src="assets/linkedin.png" height="65px" width="65px" />
+                        <br />
+                        LinkedIn
+                    </a>
+                </span>
+                <span class="desktop-list-icon">
+                    <a href="https://www.youtube.com/watch?v=HMogavLqgAM" target="_blank">
+                        <img src="assets/youtube.png" height="65px" width="65px" />
+                        <br />
+                        Stand-up Set
+                    </a>
+                </span>
+            </span>
+        </div>
         <div class="window">
             <div class="window-title">
                 <span class="window-title-content">
@@ -85,7 +157,12 @@
                 </span>
             </div>
             <div class="console">
-                M:\>
+                <div class="console-history">
+                    Welcome To Murali Kulachandran's Website
+                    <div class="console-input">
+                        <input type="text" class="console-input-text" value="M:\>" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
