@@ -218,6 +218,22 @@
             font-size: 15px;
         }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Add unremovable 'M:\>' to console input field
+            // See: http://stackoverflow.com/a/19871240
+            $("#cmdline").keydown(function (e) {
+                var oldvalue = $(this).val();
+                var field = this;
+                setTimeout(function () {
+                    if (field.value.indexOf('M:\\> ') !== 0) {
+                        $(field).val(oldvalue);
+                    }
+                }, 1);
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -271,7 +287,7 @@
                 <div class="console-history">
                     Welcome To Murali Kulachandran's Website
                     <div class="console-input">
-                        <input type="text" class="console-input-text" value="M:\>" />
+                        <input name="cmdline" id="cmdline" type="text" class="console-input-text" value="M:\> " />
                     </div>
                 </div>
             </div>
