@@ -232,12 +232,7 @@
                     }
                 }, 1);
             });
-/*            $.ajax({
-                type: "POST",
-                url: "http://murali.ca/cmd",
-                data: "hello world"
-            });
-*/
+
             $('.window').on('click', function () {
                 console.log("Window clicked");
                 var cmd = $("#cmdline")[0];
@@ -250,6 +245,20 @@
                     console.log("Escape key pressed" + $(this));
                     $(this)[0].value = "M:\\> ";
                 }
+            });
+
+            var evSource = new EventSource('/cmd/trivia/login');
+
+            evSource.addEventListener('login', function (broadcast) {
+                USER_ID = JSON.parse(broadcast.data);
+            });
+
+            evSource.addEventListener('ping', function (broadcast) {
+                console.log(broadcast);
+            });
+
+            evSource.addEventListener('event', function () {
+                console.log("event");
             });
         });
     </script>
