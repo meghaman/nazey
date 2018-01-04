@@ -28,12 +28,10 @@ var broadcast = function(toId, msg, eventName) {
 		return;
 	}
 
-	console.log("Writing event to user: " + toId);
 	eventName && clientSocket.write("event: " + eventName + "\n");
 	clientSocket.write("id: " + (++UNIQUE_ID) + "\n");
 	clientSocket.write("data: " + JSON.stringify(msg) + "\n\n");
-	clientSocket.flushHeaders();
-	console.log("Finished writing event to user: " + toId);
+	console.log("Finished writing event " + eventName  + " to user: " + toId + " with message: " + msg);
 }
 
 app.use(bodyparser.json({ type : 'application/json'})); // for parsing application/json
@@ -54,36 +52,58 @@ app.use('/assets', express.static(__dirname + '/assets'));
 var triviaRouter = express.Router();
 
 triviaRouter.get('/login', function(req, res) 
-		{ 
-			console.log("User Connected");
-                	res.writeHead(200, {
-				"Content-Type": "text/event-stream",
-				"Cache-Control": "no-cache"
-			});
-			res.write(":" + Array(2049).join(" ") + "\n"); // 2kB
-			res.write("retry: 2000\n");
-				
-			var sseUserId = req.headers['_sse_user_id_']; 
-			removeClient(sseUserId);
+{ 
+	console.log("User Connected");
+	res.writeHead(200, {
+		"Content-Type": "text/event-stream",
+		"Cache-Control": "no-cache"
+	});
+	res.write(":" + Array(2049).join(" ") + "\n"); // 2kB
+	res.write("retry: 2000\n");
+		
+	var sseUserId = req.headers['_sse_user_id_']; 
+	removeClient(sseUserId);
 
-			// A very simple id system. You'll need something more secure.
-			sseUserId = (USER_ID++).toString(36);
+	// A very simple id system. You'll need something more secure.
+	sseUserId = (USER_ID++).toString(36);
 
-			clients[sseUserId] = res;
+	clients[sseUserId] = res;
 
-			broadcast(sseUserId, sseUserId, "login");
+	broadcast(sseUserId, sseUserId, "login");
 
-			setTimeout(function() {
-				broadcast(sseUserId, new Date().getTime(), "ping");
-			}, 3000);
+	// broadcast current question
 
-			// Send back ID
-			setInterval(function() {
-				broadcast(sseUserId, new Date().getTime(), "ping");
-			}, 10000);
+	setTimeout(function() {
+		broadcast(sseUserId, new Date().getTime(), "ping");
+	}, 3000);
 
-			return;
-		});
+	// Send back ID
+	setInterval(function() {
+		broadcast(sseUserId, new Date().getTime(), "ping");
+	}, 10000);
+
+	res.on("close", function() {
+		removeClient(sseUserId);
+	});
+
+	return;
+});
+
+triviaRouter.post('/answer', function(req, res) 
+{
+	console.log("Request Headers: " + JSON.stringify(req.headers));
+
+	var sseUserId = req.get('sse-user-id'); 
+	var answer = req.body.answer;
+
+	console.log("User: " + sseUserId + " answer: " + answer);
+
+	// Compare answer with current question
+	
+	// If wrong then message user answer is wrong
+	// If right then message all users answer is right
+	res.end();
+});
 
 app.use('/cmd/trivia', triviaRouter);
 
