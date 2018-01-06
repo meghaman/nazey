@@ -2,11 +2,16 @@ var express = require("express");
 var bodyparser = require("body-parser");
 var app = express();
 var fs = require("fs");
+var events = require("events");
 
+const TRIVIA_TIMEOUT = 10000;
+
+var eventEmitter = new events.EventEmitter();
 var UNIQUE_ID   = 1;
 var USER_ID     = 1e10;
-
 var clients = {};
+
+var currentQuestion = {}
 
 var removeClient = function(id) {
 	if(id) {
@@ -83,10 +88,13 @@ triviaRouter.get('/login', function(req, res)
 	}, 10000);
 
 	res.on("close", function() {
+		console.log("User: " + sseUserId + " disconnected");
 		removeClient(sseUserId);
 	});
 
-	return;
+	setImmediate(function() { eventEmitter.emit("endQuestion", null); });
+
+	return; 
 });
 
 triviaRouter.post('/answer', function(req, res) 
@@ -94,18 +102,58 @@ triviaRouter.post('/answer', function(req, res)
 	console.log("Request Headers: " + JSON.stringify(req.headers));
 
 	var sseUserId = req.get('sse-user-id'); 
+	// TO-DO: Throw error if header doesn't exist
+	
 	var answer = req.body.answer;
+
+	// TO-DO: Throw error if user doesn't exist
 
 	console.log("User: " + sseUserId + " answer: " + answer);
 
-	// Compare answer with current question
+	// TO-DO: Compare answer with current question
 	
-	// If wrong then message user answer is wrong
-	// If right then message all users answer is right
+	// TO-DO: If wrong then message user answer is wrong
+	// TO-DO: If right then message all users answer is right
 	res.end();
 });
 
 app.use('/cmd/trivia', triviaRouter);
+
+var askQuestion = function()
+{
+	console.log("Asking new question");
+
+	// TO-DO: open FS and get new question
+	currentQuestion.question = "Ol' Hope and Change. The 44th president of course";
+	currentQuestion.answer = "Barack Obama";
+	currentQuestion.topic = "Presidential";
+	
+	// TO-DO: send only topic & question
+	broadcast("*", currentQuestion.question, "newQuestion"); 
+
+	console.log("Throwing endQuestion in " + TRIVIA_TIMEOUT + " seconds");
+	setTimeout( function() { eventEmitter.emit("endQuestion", currentQuestion.question )}, TRIVIA_TIMEOUT);
+}
+
+eventEmitter.addListener('endQuestion', function (question) {
+	console.log("End question event thrown: " + question);
+
+	// Ask a new question if
+		// The current question is null => This is the first trivia request
+		// OR this event was passed the current question => Timeout on question has elapsed
+	if(currentQuestion == null || currentQuestion.question == question)
+	{
+		broadcast("*", currentQuestion.answer, "answer");
+
+		console.log("Queuing up next question");
+		process.nextTick(askQuestion);
+	}
+});
+
+function disconnectUser(user)
+{
+	console("Disconnecting User: " + user);
+}
 
 //module.exports = app;
 

@@ -220,7 +220,8 @@
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
-    var USER_ID;
+        var USER_ID;
+        var evSource;
         $(document).ready(function () {
             // Add unremovable 'M:\>' to console input field
             // See: http://stackoverflow.com/a/19871240
@@ -265,7 +266,7 @@
                 }
             });
 
-            var evSource = new EventSource('/cmd/trivia/login');
+            evSource = new EventSource('/cmd/trivia/login');
 
             evSource.addEventListener('login', function (broadcast) {
                 USER_ID = JSON.parse(broadcast.data);
@@ -275,8 +276,8 @@
                 console.log(broadcast);
             });
 
-            evSource.addEventListener('event', function () {
-                console.log("event");
+            evSource.addEventListener('newQuestion', function (question) {
+                console.log("New Question Asked: " + question);
             });
         });
     </script>
