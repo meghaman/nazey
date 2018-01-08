@@ -200,7 +200,7 @@
             max-height: 317px;
         }
 
-        .console-history {
+        #console-history {
             width: 100%;
             overflow: auto;
             overflow-x: hidden;
@@ -269,7 +269,8 @@
             evSource = new EventSource('/cmd/trivia/login');
 
             evSource.addEventListener('login', function (broadcast) {
-                USER_ID = JSON.parse(broadcast.data);
+		console.log("User ID: " + broadcast.data);
+                USER_ID = broadcast.data;
             });
 
             evSource.addEventListener('ping', function (broadcast) {
@@ -277,7 +278,8 @@
             });
 
             evSource.addEventListener('newQuestion', function (question) {
-                console.log("New Question Asked: " + question);
+	        $("#console-history").html($("#console-history").html() + "<br />" + question.data );
+                console.log("New Question Asked: " + question.data);
             });
         });
     </script>
@@ -331,12 +333,12 @@
                 </span>
             </div>
             <div class="console">
-                <div class="console-history">
+                <div id="console-history">
                     Welcome To Murali Kulachandran's Website
-                    <div class="console-input">
-                        <input name="cmdline" id="cmdline" type="text" class="console-input-text" value="M:\> " />
-                    </div>
                 </div>
+		<div class="console-input">
+		    <input name="cmdline" id="cmdline" type="text" class="console-input-text" value="M:\> " />
+		</div>
             </div>
         </div>
     </div>

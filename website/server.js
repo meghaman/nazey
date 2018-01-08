@@ -16,6 +16,11 @@ var currentQuestion = {}
 var removeClient = function(id) {
 	if(id) {
 		delete clients[id];
+		if(Object.keys(clients).length > 0 )
+		{
+			console.log("Last user disconnected. Suspending trivia.");
+			currentQuestion = null; // Restart trivia on next connected user
+		}
 	}
 }
 
@@ -23,7 +28,7 @@ var broadcast = function(toId, msg, eventName) {
 
 	if(toId === "*") {
 		for(var p in clients) {
-			broadcast(p, msg);
+			broadcast(p, msg, eventName);
 		}
 		return;
 	}
@@ -35,7 +40,7 @@ var broadcast = function(toId, msg, eventName) {
 
 	eventName && clientSocket.write("event: " + eventName + "\n");
 	clientSocket.write("id: " + (++UNIQUE_ID) + "\n");
-	clientSocket.write("data: " + JSON.stringify(msg) + "\n\n");
+	clientSocket.write("data: " + msg + "\n\n");
 	console.log("Finished writing event " + eventName  + " to user: " + toId + " with message: " + msg);
 }
 
@@ -92,6 +97,7 @@ triviaRouter.get('/login', function(req, res)
 		removeClient(sseUserId);
 	});
 
+	// Comment to toggle trivia
 	setImmediate(function() { eventEmitter.emit("endQuestion", null); });
 
 	return; 
@@ -139,21 +145,29 @@ eventEmitter.addListener('endQuestion', function (question) {
 	console.log("End question event thrown: " + question);
 
 	// Ask a new question if
-		// The current question is null => This is the first trivia request
-		// OR this event was passed the current question => Timeout on question has elapsed
-	if(currentQuestion == null || currentQuestion.question == question)
+		// There are clients connected
+		// AND
+			// The current question is null => This is the first trivia request
+			// OR this event was passed the current question => Timeout on question has elapsed
+	if(clients && Object.keys(clients).length > 0 )
 	{
-		broadcast("*", currentQuestion.answer, "answer");
+		if(currentQuestion == null || currentQuestion.question == question)
+		{
+			broadcast("*", currentQuestion.answer, "answer");
 
-		console.log("Queuing up next question");
-		process.nextTick(askQuestion);
+			console.log("Queuing up next question");
+			process.nextTick(askQuestion);
+		}
+		else
+		{
+			console.log("Ignoring endQuestion event: Already handled");
+		}
+	}
+	else
+	{
+		console.log("Ignoring endQuestion event: No clients connected");
 	}
 });
-
-function disconnectUser(user)
-{
-	console("Disconnecting User: " + user);
-}
 
 //module.exports = app;
 
