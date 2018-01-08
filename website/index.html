@@ -156,7 +156,7 @@
             bottom: 0;
             margin: auto;
             width: 700px;
-            height: 350px;
+            height: 325px;
             border-style: solid;
             border-width: 4px;
             border-color: #F1EFE2;
@@ -197,14 +197,14 @@
             font-size: 15px;
             margin: 3px;
             background-color: black;
-            max-height: 317px;
+            max-height: 315px;
+            overflow-x: hidden;
+            overflow: auto;
         }
 
         #console-history {
             width: 100%;
-            overflow: auto;
-            overflow-x: hidden;
-            max-height: 100px;
+            max-height: 287px;
         }
 
         .console-input-text {
@@ -278,7 +278,7 @@
             });
 
             evSource.addEventListener('newQuestion', function (question) {
-	        $("#console-history").html($("#console-history").html() + "<br />" + question.data );
+	        $(".console-input").before("<br />" + question.data );
                 console.log("New Question Asked: " + question.data);
             });
         });
@@ -335,10 +335,10 @@
             <div class="console">
                 <div id="console-history">
                     Welcome To Murali Kulachandran's Website
+		    <div class="console-input">
+		        <input name="cmdline" id="cmdline" type="text" class="console-input-text" value="M:\> " />
+		    </div>
                 </div>
-		<div class="console-input">
-		    <input name="cmdline" id="cmdline" type="text" class="console-input-text" value="M:\> " />
-		</div>
             </div>
         </div>
     </div>
