@@ -11,6 +11,10 @@ var UNIQUE_ID   = 1;
 var USER_ID     = 1e10;
 var clients = {};
 
+// TO-DO: Random File
+var rawData = fs.readFileSync("data/dataaa.json"); 
+var allQuestions = JSON.parse(rawData);
+
 var currentQuestion = {}
 
 var removeClient = function(id) {
@@ -129,12 +133,11 @@ var askQuestion = function()
 {
 	console.log("Asking new question");
 
-	// TO-DO: open FS and get new question
-	currentQuestion.question = "Ol' Hope and Change. The 44th president of course";
-	currentQuestion.answer = "Barack Obama";
-	currentQuestion.topic = "Presidential";
-	
-	// TO-DO: send only topic & question
+	var randomNumber = Math.floor(Math.random() * (allQuestions.length));
+	console.log("Random numbere: " + randomNumber);
+	currentQuestion = allQuestions[randomNumber];
+
+	// TO-DO: send only category & question
 	broadcast("*", currentQuestion.question, "newQuestion"); 
 
 	console.log("Throwing endQuestion in " + TRIVIA_TIMEOUT + " seconds");
