@@ -120,12 +120,29 @@ triviaRouter.post('/answer', function(req, res)
 
 	console.log("User: " + sseUserId + " answer: " + answer);
 
-	// TO-DO: Compare answer with current question
-	
-	// TO-DO: If wrong then message user answer is wrong
-	// TO-DO: If right then message all users answer is right
-	res.end();
+	if(checkAnswer(answer))
+	{
+		console.log("User: " + sseUserId + " is right!");
+
+		process.nextTick(function() { eventEmitter.emit("endQuestion", currentQuestion.question) });
+		res.send("Correct");
+	}
+	else
+	{
+		console.log("User: " + sseUserId + " is wrong!");
+
+		res.send("Incorrect");
+	}
 });
+
+function checkAnswer(answer)
+{
+	// TO-DO: More forgiving answer compare
+	if(answer == currentQuestion.question)
+		return true;
+	else
+		return false;
+}
 
 app.use('/cmd/trivia', triviaRouter);
 
