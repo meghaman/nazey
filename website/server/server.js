@@ -53,15 +53,17 @@ app.use(bodyparser.urlencoded({ extended: true }));	// for parsing POST 'data'
 
 // Default Index route
 app.get('/', function (req, res) {
-	fs.readFile('./index.html', function(err, data) {
+	console.log("User Connected - Serving index.html");
+	fs.readFile(__dirname + '/../index.html', function(err, data) {
 		res.writeHead(200, {'Content-Type': 'text/html'});
 		res.end(data);
 	});
 });
 
 // Content routes
-app.use('/resume', express.static(__dirname + '/resume'));
-app.use('/assets', express.static(__dirname + '/assets'));
+app.use('/resume', express.static(__dirname + '/../resume'));
+app.use('/assets', express.static(__dirname + '/../assets'));
+
 
 var triviaRouter = express.Router();
 

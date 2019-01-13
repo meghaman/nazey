@@ -1,0 +1,356 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Murali Kulachandran</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!--CSS-->
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .container {
+            background-image: url("assets/background.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            min-height: 100%;
+            position: relative;
+        }
+
+        .desktop {
+            height: 100%;
+            width: 100%;
+        }
+
+        .desktop-list {
+            display: inline-block;
+            height: 100%;
+            margin-top: 20px;
+            max-width: 100px;
+        }
+
+
+        .desktop-list-icon {
+            display: inline-block;
+            height: 100px;
+            width: 100px;
+            text-align: center;
+            margin: 5px;
+        }
+
+            .desktop-list-icon a {
+                color: white;
+                text-decoration: none;
+                font-family: Tahoma,Verdana,Segoe,sans-serif;
+            }
+
+        .taskbar {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            height: 35px;
+        }
+
+        .taskbar-programs_bar {
+            display: inline-block;
+            background: #3168D5;
+            height: 35px;
+            width: 100%;
+        }
+
+            .taskbar-programs_bar::before,  .taskbar-programs_bar::after{
+                content: '';
+                display: inline-block;
+                height: 10px;
+                width: 100%;
+                position: relative;
+            }
+
+            .taskbar-programs_bar::before {
+                background: linear-gradient(to top, #3168D5, #1941A5);
+                bottom: 5px;
+            }
+
+            .taskbar-programs_bar::after {
+                background: linear-gradient(to bottom, #3168D5, #1941A5);
+                top: 5px;
+            }
+
+        .taskbar-time {
+            display: inline-block;
+            background: #108FE9;
+            height: 35px;
+            width: 75px;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            text-align: right;
+        }
+
+            .taskbar-time::before,  .taskbar-time::after{
+                content: '';
+                display: inline-block;
+                height: 10px;
+                width: 100%;
+                position: relative;
+            }
+
+            .taskbar-time::before {
+                background: linear-gradient(to top, #108FE9, #095BC9);
+                bottom: 5px;
+            }
+
+            .taskbar-time::after {
+                background: linear-gradient(to bottom, #108FE9, #095BC9);
+                top: 5px;
+            }
+
+            .taskbar-time span {
+                color: white;
+                position: relative;
+                bottom: 7px;
+                right: 7px;
+            }
+
+        .taskbar-start {
+            display: inline-block;
+            background: #1B901B;
+            height: 35px;
+            width: 100px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            text-align:center;
+        }
+
+            .taskbar-start::before, .taskbar-start::after{
+                content: '';
+                display: inline-block;
+                height: 10px;
+                width: 100%;
+                position: relative;
+            }
+
+            .taskbar-start::before {
+                background: linear-gradient(to top, #1B901B, #093F09);
+                bottom: 5px;
+            }
+
+            .taskbar-start::after {
+                background: linear-gradient(to bottom, #1B901B, #093F09);
+                top: 5px;
+            }
+
+            .taskbar-start img {
+                position: relative;
+                bottom: 33%;
+            }
+
+        .window {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            width: 700px;
+            height: 325px;
+            border-style: solid;
+            border-width: 4px;
+            border-color: #F1EFE2;
+            border-radius: 3px;
+            background-color: black;
+        }
+
+        .window-title {
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            background: linear-gradient(to left, CornflowerBlue, blue);
+            color: white;
+            border-width: 1px;
+            border-style: solid;
+            border-color: #F1EFE2;
+            position: relative;
+        }
+
+        .window-title-content {
+            margin-left: 10px;
+        }
+
+        .window-title-buttons {
+            position: absolute;
+            right: 0;
+            top: 5px;
+        }
+
+            .window-title-buttons :first-child {
+                position: relative;
+                left: 3px;
+            }
+
+        .console {
+            color: grey;
+            font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+            font-size: 15px;
+            margin: 3px;
+            background-color: black;
+            max-height: 315px;
+            overflow-x: hidden;
+            overflow: auto;
+        }
+
+        #console-history {
+            width: 100%;
+            max-height: 287px;
+        }
+
+        .console-input-text {
+            width: 100%;
+            display: block;
+            background-color: rgba(0, 0, 0, 0);
+            color: grey;
+            border: none;
+            outline: none;
+            font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+            font-size: 15px;
+        }
+
+	.console-input-question {
+	    color: #FF0009; 
+	}
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        var USER_ID;
+        var evSource;
+        $(document).ready(function () {
+            // Add unremovable 'M:\>' to console input field
+            $("#cmdline").keydown(function (e) {
+                var oldvalue = $(this).val();
+                var field = this;
+                setTimeout(function () {
+                    if (field.value.indexOf('M:\\> ') !== 0) {
+                        $(field).val(oldvalue);
+                    }
+                }, 1);
+            });
+
+            $('.window').on('click', function () {
+                console.log("Window clicked");
+		refocus();
+            });
+
+	    function refocus() {
+		console.log("Refocusing on window");
+                var cmd = $("#cmdline")[0];
+		cmd.blur();
+                cmd.focus();
+                cmd.selectionStart = cmd.selectionEnd = cmd.value.length;
+	    };
+
+            $("#cmdline").keyup(function (e) {
+                if (e.keyCode == 27) { // escape key maps to keycode `27`
+                    console.log("Escape key pressed" + $(this));
+                    $(this)[0].value = "M:\\> ";
+                }
+                if (e.keyCode == 13) {
+                    console.log("Enter key pressed" + $(this));
+
+                    var data = {};
+                    data.answer = $("#cmdline").val().replace("M:\\> ", '');
+                   
+                    console.log("Posting answer to server, answer: " + data.answer);
+                    $.ajax({
+                        type: "POST",
+                        url: "/cmd/trivia/answer",
+			data: JSON.stringify(data),
+			contentType: 'application/json; charset=utf8',
+			headers: {
+				"sse-user-id" : USER_ID
+			}
+                    });
+                }
+            });
+
+            evSource = new EventSource('/cmd/trivia/login');
+
+            evSource.addEventListener('login', function (broadcast) {
+		console.log("User ID: " + broadcast.data);
+                USER_ID = broadcast.data;
+            });
+
+            evSource.addEventListener('ping', function (broadcast) {
+                console.log(broadcast);
+            });
+
+            evSource.addEventListener('newQuestion', function (question) {
+	        $(".console-input").before("<br /><span class=\"console-input-question\">" + question.data + "</span>");
+                console.log("New Question Asked: " + question.data);
+		refocus();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="desktop">
+            <span class="desktop-list">
+                <span class="desktop-list-icon">
+                    <a href="resume/MuraliKulachandran.pdf" target="_blank">
+                        <img src="assets/Pdflogogt.png" height="65" width="65" />
+                        <br />
+                        Resume
+                    </a>
+                </span>
+                <span class="desktop-list-icon">
+                    <a href="https://www.linkedin.com/in/murali-kulachandran-998b8216/" target="_blank">
+                        <img src="assets/linkedin.png" height="65" width="65" />
+                        <br />
+                        LinkedIn
+                    </a>
+                </span>
+                <span class="desktop-list-icon">
+                    <a href="https://www.youtube.com/watch?v=HMogavLqgAM" target="_blank">
+                        <img src="assets/youtube.png" height="65" width="65" />
+                        <br />
+                        Stand-up Set
+                    </a>
+                </span>
+            </span>
+            <div class="taskbar">
+                <span class="taskbar-programs_bar">
+                </span>
+                <span class="taskbar-start">
+                    <img src="assets/mk_logo.png" height="25" width="25" />
+                </span>
+                <span class="taskbar-time">
+                    <span>1:40 PM</span>
+                </span>
+            </div>
+        </div>
+        <div class="window">
+            <div class="window-title">
+                <span class="window-title-content">
+                    M:\
+                </span>
+                <span class="window-title-buttons">
+                    <img src="assets/minimize.png" />
+                    <img src="assets/maximize.png" />
+                    <img src="assets/close.png" />
+                </span>
+            </div>
+            <div class="console">
+                <div id="console-history">
+                    Welcome To Murali Kulachandran's Website
+		    <div class="console-input">
+		        <input name="cmdline" id="cmdline" type="text" class="console-input-text" value="M:\> " />
+		    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
