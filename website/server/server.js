@@ -54,7 +54,7 @@ app.use(bodyparser.urlencoded({ extended: true }));	// for parsing POST 'data'
 // Default Index route
 app.get('/', function (req, res) {
 	console.log("User Connected - Serving index.html");
-	fs.readFile(__dirname + '/../index.html', function(err, data) {
+	fs.readFile(__dirname + '/../dist/index.html', function(err, data) {
 		res.writeHead(200, {'Content-Type': 'text/html'});
 		res.end(data);
 	});
@@ -63,6 +63,7 @@ app.get('/', function (req, res) {
 // Content routes
 app.use('/resume', express.static(__dirname + '/../resume'));
 app.use('/assets', express.static(__dirname + '/../assets'));
+app.use('/', express.static(__dirname + '/../dist'));
 
 
 var triviaRouter = express.Router();

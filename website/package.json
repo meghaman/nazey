@@ -4,7 +4,11 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --config ./webpack.config.common.js --mode production",
+    "start": "npm run build && node ./server/server.js",
+    "client": "webpack-dev-server --mode development --config ./webpack.config.common.js --devtool inline-source-map --hot",
+    "server": "nodemon ./server/server.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "",
   "license": "ISC",
@@ -26,7 +30,8 @@
     "webpack-cli": "^3.1.0",
     "webpack-combine-loaders": "^2.0.4",
     "webpack-dev-server": "^3.1.5",
-    "webpack-merge": "^4.1.4"
+    "webpack-merge": "^4.1.4",
+    "nodemon": "^1.18.9"
   },
   "dependencies": {
     "express": "^4.16.3",

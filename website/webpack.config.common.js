@@ -5,14 +5,14 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   entry: {
-    app: './src/index.js',
+    app: './client/app.js',
   },
 plugins: [
     new CleanWebpackPlugin(['app']),
     new HtmlWebpackPlugin({
       title: 'Minimum-Viable',
       filename: 'index.html',
-      template: './public/index.html',
+      template: './client/index.html',
     }),
     new MiniCssExtractPlugin()
   ],
