@@ -1,20 +1,22 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
-    app: './client/app.js',
+    app: './app.js',
   },
 plugins: [
-    new CleanWebpackPlugin(['app']),
+    new CleanWebpackPlugin([path.resolve(__dirname, '../dist')], { allowExternal :true }),
     new HtmlWebpackPlugin({
       title: 'Minimum-Viable',
       filename: 'index.html',
-      template: './client/index.html',
+      template: './index.html',
     }),
-    new MiniCssExtractPlugin()
+    new CopyWebpackPlugin([
+	    { from: 'assets', to: 'assets' } 
+    ])
   ],
 module: {
     rules: [
@@ -33,23 +35,13 @@ module: {
       },
       {
         test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-	  {
-		loader: "css-loader",
-		options: {
-			modules: true,
-			importLoader: 1,
-			localIdentName: "[name]__[local]___[hash:base64:5]" 
-		}
-	  }
-        ]
+	use:['style-loader','css-loader']
       }
     ],
   },
 output: {
     filename: 'min-viable.bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../dist'),
   },
 };
 

@@ -61,8 +61,6 @@ app.get('/', function (req, res) {
 });
 
 // Content routes
-app.use('/resume', express.static(__dirname + '/../resume'));
-app.use('/assets', express.static(__dirname + '/../assets'));
 app.use('/', express.static(__dirname + '/../dist'));
 
 
