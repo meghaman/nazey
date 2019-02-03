@@ -1,0 +1,17 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#app {
+	height: 100%;
+}
+
+.container {
+    background-image: url("/assets/background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    min-height: 100%;
+    position: relative;
+}

@@ -1,0 +1,101 @@
+.taskbar {
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	height: 35px;
+}
+
+.taskbar-programs_bar {
+	display: inline-block;
+	background: #3168D5;
+	height: 35px;
+	width: 100%;
+}
+
+.taskbar-programs_bar::before,  .taskbar-programs_bar::after{
+	content: '';
+	display: inline-block;
+	height: 10px;
+	width: 100%;
+	position: relative;
+}
+
+.taskbar-programs_bar::before {
+	background: linear-gradient(to top, #3168D5, #1941A5);
+	bottom: 5px;
+}
+
+.taskbar-programs_bar::after {
+	background: linear-gradient(to bottom, #3168D5, #1941A5);
+	top: 5px;
+}
+
+.taskbar-time {
+    display: inline-block;
+    background: #108FE9;
+    height: 35px;
+    width: 75px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    text-align: right;
+}
+
+.taskbar-time::before,  .taskbar-time::after{
+	content: '';
+	display: inline-block;
+	height: 10px;
+	width: 100%;
+	position: relative;
+}
+
+.taskbar-time::before {
+	background: linear-gradient(to top, #108FE9, #095BC9);
+	bottom: 5px;
+}
+
+.taskbar-time::after {
+	background: linear-gradient(to bottom, #108FE9, #095BC9);
+	top: 5px;
+}
+
+.taskbar-time span {
+	color: white;
+	position: relative;
+	bottom: 7px;
+	right: 7px;
+}
+
+.taskbar-start {
+    display: inline-block;
+    background: #1B901B;
+    height: 35px;
+    width: 100px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    text-align:center;
+}
+
+.taskbar-start::before, .taskbar-start::after{
+	content: '';
+	display: inline-block;
+	height: 10px;
+	width: 100%;
+	position: relative;
+}
+
+.taskbar-start::before {
+	background: linear-gradient(to top, #1B901B, #093F09);
+	bottom: 5px;
+}
+
+.taskbar-start::after {
+	background: linear-gradient(to bottom, #1B901B, #093F09);
+	top: 5px;
+}
+
+.taskbar-start img {
+	position: relative;
+	bottom: 33%;
+}
