@@ -15,7 +15,8 @@ plugins: [
       template: './index.html',
     }),
     new CopyWebpackPlugin([
-	    { from: 'assets', to: 'assets' } 
+	    { from: 'assets', to: 'assets' },
+	    { from: 'resume', to: 'resume' }
     ])
   ],
 module: {
