@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Console } from './Console';
+
 import './Window.css';
 
 export class Window extends React.Component {
@@ -16,14 +18,7 @@ export class Window extends React.Component {
 				    <img src="assets/close.png" />
 				</span>
 			    </div>
-			    <div className="console">
-				<div id="console-history">
-				    Welcome To Murali Kulachandran's Website
-				    <div className="console-input">
-					<input name="cmdline" id="cmdline" type="text" className="console-input-text" value="M:\> " />
-				    </div>
-				</div>
-			    </div>
+			    <Console />
 			</div>
 		)
 	}
