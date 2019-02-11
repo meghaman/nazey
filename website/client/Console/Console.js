@@ -14,7 +14,9 @@ export class Console extends React.Component
 		super();
 		this.state = {
 			mode : modes.Command,
-			cmd : ''
+			cmd : '',
+			history : [{ command : 'Welcome To Murali Kulachandran\'s Website', className : 'console-text' , key : 0}],
+			history_count : 0
 		};
 
 		this.keyUpHandler = this.keyUpHandler.bind(this);
@@ -29,9 +31,22 @@ export class Console extends React.Component
 			// Reset input
 			// Process command
 
-			this.setState({ cmd : '' });
+			this.setState(state => {
+				const history_count = state.history_count + 1;
+				const history = state.history.concat([{command : state.mode.Prefix + ' ' + state.cmd, className : 'the', key : history_count }]);
+				
+				// To-Do: Is this really the best way?
+				return {
+					history,
+					cmd : '',
+					mode : state.mode,
+					history_count
+				}
+			});
+
 		}
 	}
+
 
 	cmdLine_Change(e)
 	{
@@ -47,7 +62,9 @@ export class Console extends React.Component
 		return(
 		    <div className="console">
 			<div id="console-history">
-			    Welcome To Murali Kulachandran's Website
+			{this.state.history.map(item =>
+				<ConsoleHistory key={item.key} history={item} />
+			)}
 			    <div className="console-input">
 				<input name="cmdline" id="cmdline" type="text" value={this.state.mode.Prefix + this.state.cmd} className="console-input-text" onChange={this.cmdLine_Change} onKeyUp={this.keyUpHandler}/>
 			    </div>
@@ -55,4 +72,11 @@ export class Console extends React.Component
 		    </div>
 		)
 	}
+}
+
+function ConsoleHistory(props)
+{
+	return(
+		<div className={props.history.className}>{props.history.command}</div>
+	);
 }
