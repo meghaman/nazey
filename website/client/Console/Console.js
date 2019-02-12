@@ -2,8 +2,14 @@ import React from 'react';
 
 import './Console.css';
 
-var modes = {
-	Command : { Prefix : 'M:/> ' },
+const modes = {
+	Command : {
+		Prefix : 'M:/> ',
+		UserEntry : function(payload) {
+			// Parse input
+			// Call next function
+		}
+	},
 	Trivia : { Prefix : '' }
 };
 
@@ -21,19 +27,17 @@ export class Console extends React.Component
 
 		this.keyUpHandler = this.keyUpHandler.bind(this);
 		this.cmdLine_Change = this.cmdLine_Change.bind(this);
+		this.dispatch = this.dispatch.bind(this);
 	}
 
 	keyUpHandler(e)
 	{
 		if (e.keyCode == 13) {
-			console.log("Enter key pressed: " + e.target.value);
-			
-			// Reset input
-			// Process command
-
 			this.setState(state => {
 				const history_count = state.history_count + 1;
-				const history = state.history.concat([{command : state.mode.Prefix + ' ' + state.cmd, className : 'the', key : history_count }]);
+				const history = state.history.concat([{command : state.mode.Prefix + ' ' + state.cmd, className : 'user-entry', key : history_count }]);
+
+				this.dispatch('UserEntry', [state.cmd]);
 				
 				// To-Do: Is this really the best way?
 				return {
@@ -43,10 +47,20 @@ export class Console extends React.Component
 					history_count
 				}
 			});
-
 		}
 	}
 
+	dispatch(actionName, ...payload) {
+		const action = this.state.mode[actionName];
+
+		if (true) {
+			action.apply(this, ...payload);
+		}
+	}
+
+	changeModeTo(newMode) {
+		this.state.mode = newMode;
+	}
 
 	cmdLine_Change(e)
 	{
@@ -66,7 +80,7 @@ export class Console extends React.Component
 				<ConsoleHistory key={item.key} history={item} />
 			)}
 			    <div className="console-input">
-				<input name="cmdline" id="cmdline" type="text" value={this.state.mode.Prefix + this.state.cmd} className="console-input-text" onChange={this.cmdLine_Change} onKeyUp={this.keyUpHandler}/>
+				<input name="cmdline" id="cmdline" type="text" value={this.state.mode.Prefix + this.state.cmd} className="console-input-text user-entry" onChange={this.cmdLine_Change} onKeyUp={this.keyUpHandler}/>
 			    </div>
 			</div>
 		    </div>
