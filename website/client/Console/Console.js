@@ -6,11 +6,32 @@ const modes = {
 	Command : {
 		Prefix : 'M:/> ',
 		UserEntry : function(payload) {
-			// Parse input
-			// Call next function
+			// Get entered command 
+			var command = payload.split(" ")[0];
+
+			// Does word match action?
+			const action = this.state.mode[command];
+
+			if (action) {
+				// Call next function
+				this.dispatch(command);
+			}
+			else
+			{
+				this.updateAfterInput(command ? {command : 'Unrecognized Command: ' + command, className : 'user-entry' } : null);
+			}
+			
+
+		},
+		Login : function(payload) {
+			this.updateAfterInput({command : 'Logging Into Game Server...', className : 'user-entry' });
 		}
 	},
-	Trivia : { Prefix : '' }
+	Trivia : {
+		Prefix : '',
+		UserEntry : function(payload) {
+		}
+	}
 };
 
 export class Console extends React.Component
@@ -28,38 +49,27 @@ export class Console extends React.Component
 		this.keyUpHandler = this.keyUpHandler.bind(this);
 		this.cmdLine_Change = this.cmdLine_Change.bind(this);
 		this.dispatch = this.dispatch.bind(this);
+		this.updateAfterInput = this.updateAfterInput.bind(this);
 	}
 
 	keyUpHandler(e)
 	{
 		if (e.keyCode == 13) {
-			this.setState(state => {
-				const history_count = state.history_count + 1;
-				const history = state.history.concat([{command : state.mode.Prefix + ' ' + state.cmd, className : 'user-entry', key : history_count }]);
-
-				this.dispatch('UserEntry', [state.cmd]);
-				
-				// To-Do: Is this really the best way?
-				return {
-					history,
-					cmd : '',
-					mode : state.mode,
-					history_count
-				}
-			});
+			this.dispatch('UserEntry', this.state.cmd);
 		}
 	}
 
 	dispatch(actionName, ...payload) {
 		const action = this.state.mode[actionName];
 
-		if (true) {
-			action.apply(this, ...payload);
-		}
-	}
+		console.log('State: ' + this.state.mode);
+		console.log('Action: ' + actionName);
 
-	changeModeTo(newMode) {
-		this.state.mode = newMode;
+		if (action) {
+			action.call(this, ...payload);
+			return true;
+		}
+		return false;
 	}
 
 	cmdLine_Change(e)
@@ -69,6 +79,34 @@ export class Console extends React.Component
 			this.setState({ cmd : '' });
 		else
 			this.setState({ cmd : e.target.value.replace(this.state.mode.Prefix, '') })
+	}
+
+	updateAfterInput(consoleMessage)
+	{
+		this.setState(state => {
+			var history_count = state.history_count + 1;
+			var history = state.history.concat([{command : state.mode.Prefix + ' ' + state.cmd, className : 'user-entry', key : history_count }]);
+			
+			if(consoleMessage)
+			{
+				history_count++;
+
+				// To-Do: Probably fixable
+				const attachedKey = Object.assign({key: history_count}, consoleMessage);
+				// attachedKey.key = history_count;
+				console.log(attachedKey.command);
+
+				history = history.concat(attachedKey);
+			}
+
+			// To-Do: Is this really the best way?
+			return {
+				history,
+				cmd : '',
+				mode : state.mode,
+				history_count
+			}
+		});
 	}
 	
 	render()
