@@ -24,12 +24,12 @@ const modes = {
 
 		},
 		Login : function(payload) {
-			this.updateAfterInput({command : 'Logging Into Game Server...', className : 'user-entry' });
+			this.updateAfterInput({command : 'Logging Into Game Server...', className : 'user-entry' }, modes.Trivia);
 			this.connectToTrivia();			
 		}
 	},
 	Trivia : {
-		Prefix : '',
+		Prefix : 'Your Answer: ',
 		UserEntry : function(payload) {
 		}
 	}
@@ -88,23 +88,24 @@ export class Console extends React.Component
 
 	connectToTrivia()
 	{
-            this.evSource = new EventSource('/cmd/trivia/login');
+		this.evSource = new EventSource('/cmd/trivia/login');
 
-            this.evSource.addEventListener('login', function (broadcast) {
-		console.log("User ID: " + broadcast.data);
-                this.userId = broadcast.data;
-            });
+		this.evSource.addEventListener('login', function (broadcast) {
+			console.log("User ID: " + broadcast.data);
+			this.userId = broadcast.data;
+		});
 
-            this.evSource.addEventListener('ping', function (broadcast) {
-                console.log(broadcast);
-            });
+		this.evSource.addEventListener('ping', function (broadcast) {
+			console.log(broadcast);
+		});
 
-            this.evSource.addEventListener('newQuestion', function (question) {
-                console.log("New Question Asked: " + question.data);
-            });
+		this.evSource.addEventListener('newQuestion', function (question) {
+			this.updateAfterInput({command : question.data, className : 'user-entry' });
+			console.log("New Question Asked: " + question.data);
+		}.bind(this));
 	}
 
-	updateAfterInput(consoleMessage)
+	updateAfterInput(consoleMessage, newState)
 	{
 		this.setState(state => {
 			var history_count = state.history_count + 1;
@@ -126,7 +127,7 @@ export class Console extends React.Component
 			return {
 				history,
 				cmd : '',
-				mode : state.mode,
+				mode : newState ? newState : state.mode,
 				history_count
 			}
 		});
