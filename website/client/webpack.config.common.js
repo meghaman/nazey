@@ -19,6 +19,9 @@ plugins: [
 	    { from: 'resume', to: 'resume' }
     ])
   ],
+devServer: {
+	proxy: { '/cmd' : 'http://localhost:8080' }
+},
 module: {
     rules: [
       {

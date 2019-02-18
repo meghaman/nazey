@@ -3,4 +3,5 @@
 /website/client/node_modules/**
 /website/resume/**
 /website/dist/**
+**.log
 **.swp

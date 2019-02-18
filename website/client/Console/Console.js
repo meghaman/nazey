@@ -25,6 +25,7 @@ const modes = {
 		},
 		Login : function(payload) {
 			this.updateAfterInput({command : 'Logging Into Game Server...', className : 'user-entry' });
+			this.connectToTrivia();			
 		}
 	},
 	Trivia : {
@@ -43,13 +44,17 @@ export class Console extends React.Component
 			mode : modes.Command,
 			cmd : '',
 			history : [{ command : 'Welcome To Murali Kulachandran\'s Website', className : 'console-text' , key : 0}],
-			history_count : 0
+			history_count : 0,
+			trivia : { userId : -1 } 
 		};
+
+		this.userId = -1;
 
 		this.keyUpHandler = this.keyUpHandler.bind(this);
 		this.cmdLine_Change = this.cmdLine_Change.bind(this);
 		this.dispatch = this.dispatch.bind(this);
 		this.updateAfterInput = this.updateAfterInput.bind(this);
+		this.connectToTrivia = this.connectToTrivia.bind(this);
 	}
 
 	keyUpHandler(e)
@@ -79,6 +84,24 @@ export class Console extends React.Component
 			this.setState({ cmd : '' });
 		else
 			this.setState({ cmd : e.target.value.replace(this.state.mode.Prefix, '') })
+	}
+
+	connectToTrivia()
+	{
+            this.evSource = new EventSource('/cmd/trivia/login');
+
+            this.evSource.addEventListener('login', function (broadcast) {
+		console.log("User ID: " + broadcast.data);
+                this.userId = broadcast.data;
+            });
+
+            this.evSource.addEventListener('ping', function (broadcast) {
+                console.log(broadcast);
+            });
+
+            this.evSource.addEventListener('newQuestion', function (question) {
+                console.log("New Question Asked: " + question.data);
+            });
 	}
 
 	updateAfterInput(consoleMessage)
