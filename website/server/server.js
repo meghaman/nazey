@@ -115,6 +115,8 @@ triviaRouter.post('/answer', function(req, res)
 	var sseUserId = req.get('sse-user-id'); 
 	// TO-DO: Throw error if header doesn't exist
 	
+	console.log("Request body: " + JSON.stringify(req.body));
+
 	var answer = req.body.answer;
 
 	// TO-DO: Throw error if user doesn't exist
@@ -139,7 +141,7 @@ triviaRouter.post('/answer', function(req, res)
 function checkAnswer(answer)
 {
 	// TO-DO: More forgiving answer compare
-	if(answer == currentQuestion.question)
+	if(answer == currentQuestion.answer)
 		return true;
 	else
 		return false;

@@ -29,14 +29,35 @@ const modes = {
 		}
 	},
 	Trivia : {
-		Prefix : 'Your Answer: ',
+		Prefix : '',
 		UserEntry : function(payload) {
+			var data = {};
+			data.answer = payload;
+			console.log("User answer: " + payload);
+			fetch('cmd/trivia/answer', {
+				method: 'post',
+				body: JSON.stringify(data),
+				headers: {
+					"sse-user-id" : this.userId,
+					"Content-Type" : "application/json"
+				}
+			}).then(function(response) {
+				if(response.text() === "Correct")
+				{
+					this.updateAfterInput({command : 'Correct!', className : 'trivia-correct' });
+				}
+				else
+				{
+					this.updateAfterInput({command : 'Incorrect!', className : 'trivia-incorrect' });
+				}
+			}.bind(this));
 		}
 	}
 };
 
 export class Console extends React.Component
 {
+
 	constructor()
 	{
 		super();
@@ -44,17 +65,16 @@ export class Console extends React.Component
 			mode : modes.Command,
 			cmd : '',
 			history : [{ command : 'Welcome To Murali Kulachandran\'s Website', className : 'console-text' , key : 0}],
-			history_count : 0,
-			trivia : { userId : -1 } 
+			history_count : 0
 		};
-
-		this.userId = -1;
 
 		this.keyUpHandler = this.keyUpHandler.bind(this);
 		this.cmdLine_Change = this.cmdLine_Change.bind(this);
 		this.dispatch = this.dispatch.bind(this);
 		this.updateAfterInput = this.updateAfterInput.bind(this);
 		this.connectToTrivia = this.connectToTrivia.bind(this);
+
+		this.userId = -1;
 	}
 
 	keyUpHandler(e)
@@ -93,7 +113,7 @@ export class Console extends React.Component
 		this.evSource.addEventListener('login', function (broadcast) {
 			console.log("User ID: " + broadcast.data);
 			this.userId = broadcast.data;
-		});
+		}.bind(this));
 
 		this.evSource.addEventListener('ping', function (broadcast) {
 			console.log(broadcast);
