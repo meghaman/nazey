@@ -177,14 +177,13 @@ eventEmitter.addListener('endQuestion', function (question) {
 		if(currentQuestion == null || currentQuestion.question == question)
 		{
 			broadcast("*", currentQuestion.answer, "answer");
-
-			console.log("Queuing up next question");
-			process.nextTick(askQuestion);
 		}
 		else
 		{
 			console.log("Ignoring endQuestion event: Already handled");
 		}
+		console.log("Queuing up next question");
+		process.nextTick(askQuestion);
 	}
 	else
 	{
