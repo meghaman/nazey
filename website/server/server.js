@@ -3,6 +3,7 @@ var bodyparser = require("body-parser");
 var app = express();
 var fs = require("fs");
 var events = require("events");
+var uuid = require("uuid/v1");
 
 const TRIVIA_TIMEOUT = 10000;
 
@@ -80,7 +81,7 @@ triviaRouter.get('/login', function(req, res)
 	removeClient(sseUserId);
 
 	// A very simple id system. You'll need something more secure.
-	sseUserId = (USER_ID++).toString(36);
+	sseUserId = uuid();
 
 	clients[sseUserId] = res;
 
