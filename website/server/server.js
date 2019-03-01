@@ -21,11 +21,6 @@ var currentQuestion = {}
 var removeClient = function(id) {
 	if(id) {
 		delete clients[id];
-		if(Object.keys(clients).length > 0 )
-		{
-			console.log("Last user disconnected. Suspending trivia.");
-			currentQuestion = null; // Restart trivia on next connected user
-		}
 	}
 }
 
@@ -46,7 +41,7 @@ var broadcast = function(toId, msg, eventName) {
 	eventName && clientSocket.write("event: " + eventName + "\n");
 	clientSocket.write("id: " + (++UNIQUE_ID) + "\n");
 	clientSocket.write("data: " + msg + "\n\n");
-	console.log("Finished writing event " + eventName  + " to user: " + toId + " with message: " + msg);
+	// console.log("Finished writing event " + eventName  + " to user: " + toId + " with message: " + msg);
 }
 
 app.use(bodyparser.json({ type : 'application/json'})); // for parsing application/json
@@ -103,8 +98,16 @@ triviaRouter.get('/login', function(req, res)
 		removeClient(sseUserId);
 	});
 
-	// Comment to toggle trivia
-	setImmediate(function() { eventEmitter.emit("endQuestion", null); });
+	// Start the trivia if this is the first user
+	if(clients && Object.keys(clients).length == 1)
+	{
+		console.log("Current User Count: " + Object.keys(clients).length);
+		generateNewQuestion();
+		var question = currentQuestion.question;
+		var endQuestionEvent = function() { eventEmitter.emit("endQuestion", question) };
+		setTimeout(endQuestionEvent, TRIVIA_TIMEOUT);
+	}
+	askCurrentQuestion(sseUserId);
 
 	return; 
 });
@@ -127,7 +130,6 @@ triviaRouter.post('/answer', function(req, res)
 	if(checkAnswer(answer))
 	{
 		console.log("User: " + sseUserId + " is right!");
-
 		process.nextTick(function() { eventEmitter.emit("endQuestion", currentQuestion.question) });
 		res.send("Correct");
 	}
@@ -142,7 +144,7 @@ triviaRouter.post('/answer', function(req, res)
 function checkAnswer(answer)
 {
 	// TO-DO: More forgiving answer compare
-	if(answer == currentQuestion.answer)
+	if(answer == currentQuestion.answer || true)
 		return true;
 	else
 		return false;
@@ -150,19 +152,37 @@ function checkAnswer(answer)
 
 app.use('/cmd/trivia', triviaRouter);
 
-var askQuestion = function()
+function generateNewQuestion()
 {
-	console.log("Asking new question");
-
 	var randomNumber = Math.floor(Math.random() * (allQuestions.length));
-	console.log("Random numbere: " + randomNumber);
+	console.log("Random number: " + randomNumber);
 	currentQuestion = allQuestions[randomNumber];
+	console.log("Question Selected: " + currentQuestion.question);
+}
+
+function restartQuestion()
+{
+	broadcast("*", currentQuestion.answer, "answer");
+
+	console.log("Queuing up next question");
+
+	generateNewQuestion();
+	process.nextTick(askCurrentQuestion);
+
+	var question = currentQuestion.question;
+	var endQuestionEvent = function() { eventEmitter.emit("endQuestion", question) };
+	setTimeout(endQuestionEvent, TRIVIA_TIMEOUT);
+}
+
+var askCurrentQuestion = function(user)
+{
+	console.log("Asking question");
 
 	// TO-DO: send only category & question
-	broadcast("*", currentQuestion.question, "newQuestion"); 
-
-	console.log("Throwing endQuestion in " + TRIVIA_TIMEOUT + " seconds");
-	setTimeout( function() { eventEmitter.emit("endQuestion", currentQuestion.question )}, TRIVIA_TIMEOUT);
+	if(user)
+		broadcast(user, currentQuestion.question, "newQuestion"); 
+	else
+		broadcast("*", currentQuestion.question, "newQuestion"); 
 }
 
 eventEmitter.addListener('endQuestion', function (question) {
@@ -175,16 +195,16 @@ eventEmitter.addListener('endQuestion', function (question) {
 			// OR this event was passed the current question => Timeout on question has elapsed
 	if(clients && Object.keys(clients).length > 0 )
 	{
-		if(currentQuestion == null || currentQuestion.question == question)
+		if((currentQuestion != null || currentQuestion != 'undefined') && currentQuestion.question == question)
 		{
-			broadcast("*", currentQuestion.answer, "answer");
+			console.log("Current question has not been answered: " + currentQuestion.question + " asked question: " + question);
+			// No one answered the question correctly
+			restartQuestion();
 		}
 		else
 		{
 			console.log("Ignoring endQuestion event: Already handled");
 		}
-		console.log("Queuing up next question");
-		process.nextTick(askQuestion);
 	}
 	else
 	{

@@ -4,14 +4,14 @@
     font-size: 15px;
     margin: 3px;
     background-color: black;
-    max-height: 315px;
+    max-height: 500px;
     overflow-x: hidden;
     overflow: auto;
 }
 
 #console-history {
     width: 100%;
-    max-height: 287px;
+    max-height: 463px;
 }
 
 .console-input-text {
@@ -27,4 +27,16 @@
 
 .console-input-question {
     color: #FF0009; 
+}
+
+.trivia-question {
+	color: yellow;
+}
+
+.trivia-incorrect {
+	color: red;
+}
+
+.trivia-correct {
+	color: green;
 }

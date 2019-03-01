@@ -5,9 +5,13 @@ import { Console } from './Console';
 import './Window.css';
 
 export class Window extends React.Component {
+	handleClick() {
+		this.refs.console.setFocus();
+	}
+
 	render() {
 		return(
-			<div className="window">
+			<div className="window" onClick={this.handleClick.bind(this)}>
 			    <div className="window-title">
 				<span className="window-title-content">
 				    M:\
@@ -18,7 +22,7 @@ export class Window extends React.Component {
 				    <img src="assets/close.png" />
 				</span>
 			    </div>
-			    <Console />
+			    <Console ref="console" />
 			</div>
 		)
 	}

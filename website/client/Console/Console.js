@@ -120,7 +120,7 @@ export class Console extends React.Component
 		});
 
 		this.evSource.addEventListener('newQuestion', function (question) {
-			this.updateAfterInput({command : question.data, className : 'user-entry' });
+			this.updateAfterInput({command : question.data, className : 'trivia-question' });
 			console.log("New Question Asked: " + question.data);
 		}.bind(this));
 	}
@@ -152,6 +152,20 @@ export class Console extends React.Component
 			}
 		});
 	}
+
+	componentDidUpdate()
+	{
+		this.scrollToBottom.call(this);
+	}
+
+	scrollToBottom() {
+		this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+	}
+
+	setFocus()
+	{
+		this.refs.Input.focus();
+	}
 	
 	render()
 	{
@@ -162,8 +176,10 @@ export class Console extends React.Component
 				<ConsoleHistory key={item.key} history={item} />
 			)}
 			    <div className="console-input">
-				<input name="cmdline" id="cmdline" type="text" value={this.state.mode.Prefix + this.state.cmd} className="console-input-text user-entry" onChange={this.cmdLine_Change} onKeyUp={this.keyUpHandler}/>
+				<input name="cmdline" id="cmdline" type="text" ref="Input" value={this.state.mode.Prefix + this.state.cmd} className="console-input-text user-entry" onChange={this.cmdLine_Change} onKeyUp={this.keyUpHandler}/>
 			    </div>
+				<div ref={(el) => { this.messagesEnd = el; }}>			
+				</div>
 			</div>
 		    </div>
 		)
