@@ -80,8 +80,11 @@ triviaRouter.get('/login', function(req, res)
 
 	clients[sseUserId] = res;
 
-	broadcast(sseUserId, sseUserId, "login");
-
+	var loginData = {};
+	loginData.userId = sseUserId;
+	loginData.userCount = Object.keys(clients).length;
+	broadcast(sseUserId, JSON.stringify(loginData), "login");
+	
 	// broadcast current question
 
 	setTimeout(function() {
@@ -130,8 +133,8 @@ triviaRouter.post('/answer', function(req, res)
 	if(checkAnswer(answer))
 	{
 		console.log("User: " + sseUserId + " is right!");
-		process.nextTick(function() { eventEmitter.emit("endQuestion", currentQuestion.question) });
 		res.send("Correct");
+		setImmediate(function() { eventEmitter.emit("endQuestion", currentQuestion.question) });
 	}
 	else
 	{
@@ -143,8 +146,9 @@ triviaRouter.post('/answer', function(req, res)
 
 function checkAnswer(answer)
 {
+	var sanitizedAnswer = answer.toLowerCase();
 	// TO-DO: More forgiving answer compare
-	if(answer == currentQuestion.answer || true)
+	if(currentQuestion.answer.toLowerCase().includes(sanitizedAnswer))
 		return true;
 	else
 		return false;
@@ -178,11 +182,15 @@ var askCurrentQuestion = function(user)
 {
 	console.log("Asking question");
 
+	safeQuestion = {};
+	safeQuestion.category = currentQuestion.category;
+	safeQuestion.question = currentQuestion.question;
+
 	// TO-DO: send only category & question
 	if(user)
-		broadcast(user, currentQuestion.question, "newQuestion"); 
+		broadcast(user, JSON.stringify(safeQuestion), "newQuestion"); 
 	else
-		broadcast("*", currentQuestion.question, "newQuestion"); 
+		broadcast("*", JSON.stringify(safeQuestion), "newQuestion"); 
 }
 
 eventEmitter.addListener('endQuestion', function (question) {

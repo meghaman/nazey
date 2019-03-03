@@ -23,14 +23,20 @@ const modes = {
 			
 
 		},
-		Login : function(payload) {
-			this.updateAfterInput({command : 'Logging Into Game Server...', className : 'user-entry' }, modes.Trivia);
+		Trivia : function(payload) {
+			this.updateAfterInput({command : 'Logging Into Game Server...', className : 'trivia-message' }, modes.Trivia);
+			this.updateAfterInput({command : 'Type "!quit" to disconnect', className : 'trivia-emphasis' }, null);
 			this.connectToTrivia();			
 		}
 	},
 	Trivia : {
 		Prefix : '',
 		UserEntry : function(payload) {
+			if(payload === '!quit')
+			{
+				this.disconnectFromTrivia();
+				return;
+			}
 			var data = {};
 			data.answer = payload;
 			console.log("User answer: " + payload);
@@ -66,8 +72,8 @@ export class Console extends React.Component
 		this.state = {
 			mode : modes.Command,
 			cmd : '',
-			history : [{ command : 'Welcome To Murali Kulachandran\'s Website', className : 'console-text' , key : 0}],
-			history_count : 0
+			history : [{ command : 'Welcome To Murali Kulachandran\'s Website', className : 'console-text' , key : 0}, { command : 'Available Commands: Trivia', className : 'console-text' , key : 1}],
+			history_count : 1
 		};
 
 		this.keyUpHandler = this.keyUpHandler.bind(this);
@@ -75,6 +81,7 @@ export class Console extends React.Component
 		this.dispatch = this.dispatch.bind(this);
 		this.updateAfterInput = this.updateAfterInput.bind(this);
 		this.connectToTrivia = this.connectToTrivia.bind(this);
+		this.disconnectFromTrivia = this.disconnectFromTrivia.bind(this);
 
 		this.userId = -1;
 	}
@@ -113,8 +120,10 @@ export class Console extends React.Component
 		this.evSource = new EventSource('/cmd/trivia/login');
 
 		this.evSource.addEventListener('login', function (broadcast) {
-			console.log("User ID: " + broadcast.data);
-			this.userId = broadcast.data;
+			var loginData = JSON.parse(broadcast.data);
+			this.userId = loginData.userId;
+			console.log("Connected Users: " + loginData.userCount);
+			this.updateAfterInput({command : 'Number of connected users: ' + loginData.userCount, className : 'trivia-message' });
 		}.bind(this));
 
 		this.evSource.addEventListener('ping', function (broadcast) {
@@ -175,6 +184,12 @@ export class Console extends React.Component
 	setFocus()
 	{
 		this.refs.Input.focus();
+	}
+	
+	disconnectFromTrivia()
+	{
+		this.evSource.close();
+		this.updateAfterInput({command : 'Disconnecting from Game Server...', className : 'user-entry' }, modes.Command);
 	}
 	
 	render()
