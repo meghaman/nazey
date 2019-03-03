@@ -42,7 +42,9 @@ const modes = {
 					"Content-Type" : "application/json"
 				}
 			}).then(function(response) {
-				if(response.text() === "Correct")
+				return response.text();
+			}).then(function(responseText) {
+				if(responseText == "Correct")
 				{
 					this.updateAfterInput({command : 'Correct!', className : 'trivia-correct' });
 				}
@@ -120,8 +122,16 @@ export class Console extends React.Component
 		});
 
 		this.evSource.addEventListener('newQuestion', function (question) {
-			this.updateAfterInput({command : question.data, className : 'trivia-question' });
+			var questionObj = JSON.parse(question.data);
+			console.log("JSON Question: " + JSON.parse(question.data));
+			this.updateAfterInput({command : 'Category: ' + questionObj.category, className : 'trivia-category' });
+			this.updateAfterInput({command : 'Question: ' + questionObj.question, className : 'trivia-question' });
 			console.log("New Question Asked: " + question.data);
+		}.bind(this));
+
+		this.evSource.addEventListener('answer', function (answer) {
+			this.updateAfterInput({command : 'Answer: ' + answer.data, className : 'trivia-answer' });
+			console.log("Answer: " + answer.data);
 		}.bind(this));
 	}
 
