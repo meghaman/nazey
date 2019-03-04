@@ -8,7 +8,7 @@ module.exports = {
     // First application
     {
       name      : 'nazey',
-      script    : 'server/server.js',
+      script    : 'server.js',
       env: {
         COMMON_VARIABLE: 'true'
       },
