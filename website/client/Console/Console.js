@@ -14,7 +14,7 @@ const modes = {
 
 			if (action) {
 				// Call next function
-				this.dispatch(command);
+				this.dispatch(command, payload.split(" ").slice(1));
 			}
 			else
 			{
@@ -27,6 +27,10 @@ const modes = {
 			this.updateAfterInput({command : 'Logging Into Game Server...', className : 'trivia-message' }, modes.Trivia);
 			this.updateAfterInput({command : 'Type "!quit" to disconnect', className : 'trivia-emphasis' }, null);
 			this.connectToTrivia();			
+		},
+		LongMatch : function(args) {
+			this.updateAfterInput({command : 'String: ' + args[0] + ', Pattern: ' + args[1], className : 'user-entry' }, null);
+			this.longMatch(args);
 		}
 	},
 	Trivia : {
@@ -82,6 +86,7 @@ export class Console extends React.Component
 		this.updateAfterInput = this.updateAfterInput.bind(this);
 		this.connectToTrivia = this.connectToTrivia.bind(this);
 		this.disconnectFromTrivia = this.disconnectFromTrivia.bind(this);
+		this.longMatch = this.longMatch.bind(this);
 
 		this.userId = -1;
 	}
@@ -190,6 +195,11 @@ export class Console extends React.Component
 	{
 		this.evSource.close();
 		this.updateAfterInput({command : 'Disconnecting from Game Server...', className : 'user-entry' }, modes.Command);
+	}
+
+	longMatch(args)
+	{
+		// Recursion!
 	}
 	
 	render()
