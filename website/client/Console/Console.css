@@ -6,7 +6,7 @@
     background-color: black;
     max-height: 500px;
     overflow-x: hidden;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 #console-history {
